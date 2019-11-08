@@ -155,6 +155,8 @@ MonoBehaviour:
   ImpulseAttackSpeed: 0.5
   jumpingAudio: {fileID: 8300000, guid: 7fff3b93cd6dcb14ba431092866b6fa7, type: 3}
   impulseAudio: {fileID: 8300000, guid: da4b13233f0293348aa37a255712bb26, type: 3}
+  ImpulseObj: {fileID: 560944988218923642, guid: e881296f2ab86e94ea3a8c141aac76f4,
+    type: 3}
 --- !u!65 &2863425839121256005
 BoxCollider:
   m_ObjectHideFlags: 0

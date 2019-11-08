@@ -293,6 +293,12 @@ PrefabInstance:
       propertyPath: PlayerID
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7507650438378641616, guid: 1a266373e93789448b248ded2bb04911,
+        type: 3}
+      propertyPath: ImpulseObj
+      value: 
+      objectReference: {fileID: 560944988218923642, guid: e881296f2ab86e94ea3a8c141aac76f4,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a266373e93789448b248ded2bb04911, type: 3}
 --- !u!1 &654573966
@@ -465,6 +471,12 @@ PrefabInstance:
       propertyPath: impulseAudio
       value: 
       objectReference: {fileID: 8300000, guid: aedf9ad81396c8f47b7f22682201a7d2, type: 3}
+    - target: {fileID: 7507650438378641616, guid: 1a266373e93789448b248ded2bb04911,
+        type: 3}
+      propertyPath: ImpulseObj
+      value: 
+      objectReference: {fileID: 560944988218923642, guid: e881296f2ab86e94ea3a8c141aac76f4,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a266373e93789448b248ded2bb04911, type: 3}
 --- !u!1 &1465421976 stripped

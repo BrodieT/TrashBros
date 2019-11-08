@@ -9,6 +9,6 @@ public class Ownership : MonoBehaviour
     public void SetOwnership(int id)
     {
         ownerID = id;
-        Debug.Log("I am owned by Player " + id);
+       // Debug.Log("I am owned by Player " + id);
     }
 }

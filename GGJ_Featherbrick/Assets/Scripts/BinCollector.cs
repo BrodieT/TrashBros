@@ -20,10 +20,9 @@ public class BinCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OW");
+
         if (other.gameObject.tag == "Trash")
         {
-            Debug.Log("EW");
             switch (other.gameObject.GetComponent<Ownership>().ownerID)
             {
                 case 1:
@@ -31,21 +30,21 @@ public class BinCollector : MonoBehaviour
 
 
                         GLOBAL_.player1Score++; // Add to player 1 score
-                        Debug.Log("P1 score updated to: " + GLOBAL_.player1Score);
+                        //Debug.Log("P1 score updated to: " + GLOBAL_.player1Score);
                         Destroy(other.gameObject);
                         break;
                     }
                 case 2:
                     {
                         GLOBAL_.player2Score++; // Add to player 2 score
-                        Debug.Log("P2 score updated to: " + GLOBAL_.player2Score);
+                        //Debug.Log("P2 score updated to: " + GLOBAL_.player2Score);
                         Destroy(other.gameObject);
                         break;
                     }
                 case 3:
                     {
                         GLOBAL_.player3Score++;// Add to player 3 score
-                        Debug.Log("P3 score updated to: " + GLOBAL_.player3Score);
+                       // Debug.Log("P3 score updated to: " + GLOBAL_.player3Score);
                         Destroy(other.gameObject);
                         break;
                     }
@@ -53,7 +52,7 @@ public class BinCollector : MonoBehaviour
                     {
                         GLOBAL_.player4Score++;// Add to player 4 score
 
-                        Debug.Log("P4 score updated to: " + GLOBAL_.player4Score);
+                        //Debug.Log("P4 score updated to: " + GLOBAL_.player4Score);
                         Destroy(other.gameObject);
                         break;
                     }

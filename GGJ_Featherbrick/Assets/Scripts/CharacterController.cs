@@ -18,7 +18,7 @@ public class CharacterController : MonoBehaviour
     //Aim direction indicated by the right analogue stick
     Vector3 AimDirection = new Vector2();
     //The force applied to the trash when thrown
-    float ThrowForce = 5.0f;
+    float ThrowForce = 25.0f;
     //Reference to the picked up piece of trash
     public GameObject Trash;
     //Tracks the button state of the left trigger
@@ -34,7 +34,7 @@ public class CharacterController : MonoBehaviour
     float Impulse = 75.0f;
     bool IsHolding = false;
 
-    float fallvalue = 0.025f;
+    float fallvalue = 0.5f;
     float pFallValue = 0.8f;
 
     //audio variables
@@ -108,25 +108,7 @@ public class CharacterController : MonoBehaviour
         //Recieve all inputs
         HandleInput();
 
-        //Handle the picking up/holding of the trash
-
-        if (LeftTriggerDown && PreviousTriggerState != 0 && Trash != null)
-        {
-            IsHolding = true;
-            //If the Left Trigger is held down move the trash object above the player
-            Trash.transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z), Trash.transform.rotation);
-        }
-        else if (LeftTriggerDown && PreviousTriggerState == 0)
-        {
-            //If the left trigger is pressed after being in the released state pickup the trash
-            PickupTrash();
-        }
-        else
-        {
-            IsHolding = false;
-            //If the left trigger is released, remove the reference to the trash object and allow it to fall in place
-            Trash = null;
-        }
+      
 
         //Player movement along the x-axis
 
@@ -205,10 +187,42 @@ public class CharacterController : MonoBehaviour
 
         }
 
+
+
+        //Handle the picking up/holding of the trash
+        if (LeftTriggerDown && PreviousTriggerState != 0 && Trash != null)
+        {
+            IsHolding = true;
+        }
+        else if (LeftTriggerDown && PreviousTriggerState == 0)
+        {
+            //If the left trigger is pressed after being in the released state pickup the trash
+            PickupTrash();
+        }
+        else
+        {
+            IsHolding = false;
+            //If the left trigger is released, remove the reference to the trash object and allow it to fall in place
+            Trash = null;
+        }
+
+        if (IsHolding)
+        {
+            //If the Left Trigger is held down move the trash object above the player
+            Trash.transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z), Trash.transform.rotation);
+        }
        
-      
+
         //Store the current state of the left trigger for use in the next frame
         PreviousTriggerState = Input.GetAxisRaw("Player" + PlayerID + "LT");
+
+        if(impulseRef)
+        {
+            if(impulseRef.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Finished"))
+            {
+                Destroy(impulseRef);
+            }
+        }
     }
 
     Vector3 totalForce = new Vector3();
@@ -227,13 +241,8 @@ public class CharacterController : MonoBehaviour
 
         if (IsGrounded && isJump)
         {
-
-            GetComponent<Rigidbody>().AddForce(JumpForce * Vector3.up, ForceMode.Impulse);
-            IsGrounded = false;
-            isJump = false;
-
-           // totalForce += (Vector3.up * JumpForce);
-            this.GetComponent<AudioSource>().PlayOneShot(jumpingAudio);
+            Jump();
+           
         }
 
         if(!IsGrounded)
@@ -242,30 +251,48 @@ public class CharacterController : MonoBehaviour
         }
 
 
-        if(isThrow)
+       
+
+
+
+        if (isThrow)
         {
             isThrow = false;
             ThrowTrash();
         }
 
-        if(isPulse)
+        if (isPulse)
         {
             isPulse = false;
             ActivateImpulse();
         }
 
-       // GetComponent<Rigidbody>().AddForce(totalForce, ForceMode.VelocityChange);
+
+
+       
+
+        // GetComponent<Rigidbody>().AddForce(totalForce, ForceMode.VelocityChange);
     }
 
     bool isJump = false;
     bool isPulse = false;
     bool isThrow = false;
     Collider[] CollidersInRadius;
+    public GameObject ImpulseObj;
+    GameObject impulseRef;
 
     //This function will apply an upward force to the player if they are not midair when called
     void Jump()
     {
-       
+        GetComponent<Rigidbody>().AddForce(JumpForce * Vector3.up, ForceMode.Impulse);
+        IsGrounded = false;
+        isJump = false;
+
+        // totalForce += (Vector3.up * JumpForce);
+        if (GLOBAL_.SoundEnabled)
+        {
+            this.GetComponent<AudioSource>().PlayOneShot(jumpingAudio);
+        }
     }
        
     //This function will cheack a nearby radius around the player for trash and pick it up when called
@@ -286,7 +313,7 @@ public class CharacterController : MonoBehaviour
 
                     Trash = c.gameObject;
                     //Move the piece of trash to be above the players head
-                    Trash.transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z), Trash.transform.rotation);
+                   // Trash.transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z), Trash.transform.rotation);
                     Trash.GetComponent<Ownership>().SetOwnership(PlayerID);
                     return;
                 }
@@ -303,22 +330,28 @@ public class CharacterController : MonoBehaviour
     void ThrowTrash()
     {
         LeftTriggerDown = false;
+        IsHolding = false;
         //Normalise the aim direction and invert the y value 
         AimDirection.Normalize();
         AimDirection.y *= -1;
         //Apply the force
         Trash.GetComponent<Rigidbody>().AddForce(AimDirection * ThrowForce, ForceMode.Impulse);
+        Trash = null;
     }
 
     //This function will activate the players impulse when called
     void ActivateImpulse()
     {
+        impulseRef = Instantiate(ImpulseObj, this.transform, false);
         ImpulseCooldown = 1.0f / ImpulseAttackSpeed;
 
         if (CollidersInRadius.Length > 0)
 
         {
-            this.GetComponent<AudioSource>().PlayOneShot(impulseAudio);
+            if (GLOBAL_.SoundEnabled)
+            {
+                this.GetComponent<AudioSource>().PlayOneShot(impulseAudio);
+            }
             foreach (Collider c in CollidersInRadius)
             {
                 if (c.gameObject.tag == "Player" && c.gameObject != gameObject)
@@ -334,15 +367,15 @@ public class CharacterController : MonoBehaviour
        
     }
 
+
+    //The following functions detect if the player is colliding with the ground
     private void OnTriggerStay(Collider other)
     {
         if(other.tag == "Building")
         {
-            Debug.Log("Grounded");
             IsGrounded = true;
         }
     }
-
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Building")
@@ -350,7 +383,8 @@ public class CharacterController : MonoBehaviour
             IsGrounded = false;
         }
     }
-    //The following functions detect if the player is colliding with the ground
+
+    //The following functions handle player collisions with walls
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Building" && !IsGrounded)
@@ -361,14 +395,11 @@ public class CharacterController : MonoBehaviour
             GetComponent<Rigidbody>().AddForce(dir * fallvalue);
         }
     }
-
-    //The following functions detect if the player is colliding with the ground
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Building" && !IsGrounded)
         {
             Vector3 dir = new Vector3();
-           // dir = (collision.gameObject.transform.position - transform.gameObject.transform.position);
             dir.y = -1.0f;
             GetComponent<Rigidbody>().AddForce(dir * fallvalue);
         }

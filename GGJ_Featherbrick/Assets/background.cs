@@ -7,7 +7,10 @@ public class background : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponentInParent<AudioSource>().Play();
+        if (GLOBAL_.MusicEnabled)
+        {
+            GetComponentInParent<AudioSource>().Play();
+        }
     }
 
     // Update is called once per frame

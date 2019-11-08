@@ -13,7 +13,8 @@ public class MainMenuSceneChanger : MonoBehaviour
 
     void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
+            
     }
 
     // Update is called once per frame
@@ -42,7 +43,7 @@ public class MainMenuSceneChanger : MonoBehaviour
     public void MusicToggle()
     {
         GLOBAL_.MusicEnabled = !GLOBAL_.MusicEnabled;
-        Debug.Log("Music toggle");
+        Debug.Log("Music toggled " + GLOBAL_.MusicEnabled);
      
     }
 
@@ -50,7 +51,7 @@ public class MainMenuSceneChanger : MonoBehaviour
     public void SoundToggle()
     {
         GLOBAL_.SoundEnabled = !GLOBAL_.SoundEnabled;
-        Debug.Log("Sound toggle");
+        Debug.Log("Sound toggled " + GLOBAL_.SoundEnabled);
 
     }
      void Exit()

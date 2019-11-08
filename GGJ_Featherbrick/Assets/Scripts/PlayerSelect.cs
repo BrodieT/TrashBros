@@ -189,6 +189,6 @@ public class PlayerSelect : MonoBehaviour
             }
         }
 
-        Debug.Log("Player selected_character_id = " + players[0].selected_character_id);
+       // Debug.Log("Player selected_character_id = " + players[0].selected_character_id);
     }
 }
